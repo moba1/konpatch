@@ -14,7 +14,7 @@ fn main() {
     let output_file_path = args
         .get(2)
         .map_or("a.out", |v| v.as_str());
-    let mut source_file = match fs::File::open(source_file_path) {
+    let source_file = match fs::File::open(source_file_path) {
         Err(why) => { eprintln!("cannot open source file: {}", why); process::exit(2) },
         Ok(file) => file,
     };
