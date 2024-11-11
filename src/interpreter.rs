@@ -12,31 +12,29 @@ impl Interpreter {
             match mnemonic {
                 parser::Symbol::ValueIncrement => self.increment_value(),
                 parser::Symbol::ValueDecrement => self.decrement_value(),
+                parser::Symbol::PointerIncrement => self.increment_pointer(),
             }
         }
     }
 
     fn increment_value(&mut self) {
-        let extended_size = self.index + 1 - self.mem.len();
-        for _ in 0..extended_size {
-            self.mem.push(0);
-        }
-
-        self.mem[self.index]+=1;
+        self.mem[self.index] = self.mem[self.index].wrapping_add(1);
     }
 
     fn decrement_value(&mut self) {
-        let extended_size = self.index + 1 - self.mem.len();
-        for _ in 0..extended_size {
+        self.mem[self.index] = self.mem[self.index].wrapping_sub(1);
+    }
+
+    fn increment_pointer(&mut self) {
+        self.index += 1;
+        if self.mem.len() < self.index + 1 {
             self.mem.push(0);
         }
-
-        self.mem[self.index]-=1;
     }
 
     pub fn new() -> Self {
         Self {
-            mem: vec![],
+            mem: vec![0],
             index: 0,
         }
     }
