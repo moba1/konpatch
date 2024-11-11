@@ -3,7 +3,7 @@ use std::process;
 use std::fs;
 
 mod parser;
-// mod interpreter;
+mod interpreter;
 
 fn main() {
     let args: Vec<String> = env::args().collect();
@@ -26,5 +26,8 @@ fn main() {
         process::exit(2);
     }
     let code = code.unwrap();
-    println!("{:?}", code);
+
+    let mut vm = interpreter::Interpreter::new();
+    vm.run(code);
+    println!("{:?}", vm);
 }
