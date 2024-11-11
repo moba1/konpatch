@@ -11,6 +11,7 @@ impl Interpreter {
         for mnemonic in code {
             match mnemonic {
                 parser::Symbol::ValueIncrement => self.increment_value(),
+                parser::Symbol::ValueDecrement => self.decrement_value(),
             }
         }
     }
@@ -22,6 +23,15 @@ impl Interpreter {
         }
 
         self.mem[self.index]+=1;
+    }
+
+    fn decrement_value(&mut self) {
+        let extended_size = self.index + 1 - self.mem.len();
+        for _ in 0..extended_size {
+            self.mem.push(0);
+        }
+
+        self.mem[self.index]-=1;
     }
 
     pub fn new() -> Self {

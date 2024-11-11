@@ -6,7 +6,8 @@ use std::fmt;
 
 #[derive(Debug)]
 pub enum Symbol {
-    ValueIncrement
+    ValueIncrement,
+    ValueDecrement,
 }
 
 #[derive(Debug)]
@@ -27,6 +28,8 @@ pub fn parse<R: io::Read>(reader: R) -> io::Result<Vec<Symbol>> {
         let symbol = match byte? {
             // `+` in US ASCII
             0x2B => Symbol::ValueIncrement,
+            // `-` in US ASCII
+            0x2D => Symbol::ValueDecrement,
             // `\n` in US ASCII
             0x0A => continue,
             unknown_symbol => return Err(io::Error::new(
