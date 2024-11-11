@@ -3,6 +3,7 @@ use std::process;
 use std::fs;
 
 mod parser;
+// mod interpreter;
 
 fn main() {
     let args: Vec<String> = env::args().collect();
@@ -19,11 +20,11 @@ fn main() {
         Ok(file) => file,
     };
 
-    let control_flow_graph = parser::parse(source_file);
-    if let Err(why) = control_flow_graph {
+    let code = parser::parse(source_file);
+    if let Err(why) = code {
         eprintln!("cannot parse source code: {}", why);
         process::exit(2);
     }
-    let control_flow_graph = control_flow_graph.unwrap();
-    println!("{:?}", control_flow_graph);
+    let code = code.unwrap();
+    println!("{:?}", code);
 }
