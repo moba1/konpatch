@@ -10,6 +10,7 @@ pub enum Symbol {
     ValueDecrement,
     PointerIncrement,
     PointerDecrement,
+    PutCharacter,
 }
 
 #[derive(Debug)]
@@ -36,6 +37,8 @@ pub fn parse<R: io::Read>(reader: R) -> io::Result<Vec<Symbol>> {
             0x3E => Symbol::PointerIncrement,
             // `<` in US ASCII
             0x3C => Symbol::PointerDecrement,
+            // `.` in US ASCII
+            0x2E => Symbol::PutCharacter,
             // `\n` in US ASCII
             0x0A => continue,
             unknown_symbol => return Err(io::Error::new(

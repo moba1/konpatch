@@ -20,13 +20,14 @@ pub struct Interpreter {
 }
 
 impl Interpreter {
-    pub fn run(&mut self, code: Vec<parser::Symbol>) -> Result<(), OutOfRangeError> {
+    pub fn run(&mut self, code: Vec<parser::Symbol>) -> Result<(), Box<dyn error::Error>> {
         for mnemonic in code {
             match mnemonic {
                 parser::Symbol::ValueIncrement => self.increment_value(),
                 parser::Symbol::ValueDecrement => self.decrement_value(),
                 parser::Symbol::PointerIncrement => self.increment_pointer(),
                 parser::Symbol::PointerDecrement => self.decrement_pointer()?,
+                parser::Symbol::PutCharacter => self.put_character(),
             }
         }
 
@@ -55,6 +56,11 @@ impl Interpreter {
         self.index -= 1;
 
         Ok(())
+    }
+
+    fn put_character(&mut self) {
+        let character = char::try_from(self.mem[self.index]).unwrap();
+        print!("{}", character);
     }
 
     pub fn new() -> Self {
