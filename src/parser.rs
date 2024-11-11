@@ -22,7 +22,7 @@ pub struct ControlFlowGraph {
 }
 
 impl ControlFlowGraph {
-    unsafe fn push(&mut self, node: ptr::NonNull<OneDirectionNode>) {
+    fn push(&mut self, node: ptr::NonNull<OneDirectionNode>) {
         unsafe {
             (*node.as_ptr()).next = None;
             let node = Some(node);
@@ -68,9 +68,7 @@ pub fn parse<R: io::Read>(reader: R) -> io::Result<ControlFlowGraph> {
             next: None,
         });
         let node_ptr = ptr::NonNull::from(Box::leak(node));
-        unsafe {
-            control_flow_graph.push(node_ptr);
-        }
+        control_flow_graph.push(node_ptr);
     }
 
     Ok(control_flow_graph)
