@@ -2,6 +2,8 @@ use std::env;
 use std::process;
 use std::fs;
 
+mod parser;
+
 fn main() {
     let args: Vec<String> = env::args().collect();
     if args.len() < 2 {
@@ -16,4 +18,12 @@ fn main() {
         Err(why) => { eprintln!("cannot open source file: {}", why); process::exit(2) },
         Ok(file) => file,
     };
+
+    let control_flow_graph = parser::parse(source_file);
+    if let Err(why) = control_flow_graph {
+        eprintln!("cannot parse source code: {}", why);
+        process::exit(2);
+    }
+    let control_flow_graph = control_flow_graph.unwrap();
+    println!("{:?}", control_flow_graph);
 }
