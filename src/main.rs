@@ -28,6 +28,9 @@ fn main() {
     let code = code.unwrap();
 
     let mut vm = interpreter::Interpreter::new();
-    vm.run(code);
+    if let Err(err) = vm.run(code) {
+        eprintln!("error occured: {:?}", err);
+        process::exit(3);
+    }
     println!("{:?}", vm);
 }
