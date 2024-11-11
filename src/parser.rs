@@ -40,7 +40,7 @@ pub fn parse<R: io::Read>(reader: R) -> io::Result<Vec<Symbol>> {
             // `.` in US ASCII
             0x2E => Symbol::PutCharacter,
             // `\n` in US ASCII
-            0x0A => continue,
+            0x0A | 0x20 => continue,
             unknown_symbol => return Err(io::Error::new(
                 io::ErrorKind::Other, UnknownSymbolError(unknown_symbol)
             )),
