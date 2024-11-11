@@ -7,5 +7,9 @@ fn main() {
         eprintln!("Error: required input file name");
         process::exit(1)
     }
-    println!("{:?}", args);
+    let input_file_path = &args[1];
+    let output_file_path = args
+        .get(2)
+        .map_or("a.out", |v| v.as_str());
+    println!("input: {:?}, output: {:?}", input_file_path, output_file_path);
 }
