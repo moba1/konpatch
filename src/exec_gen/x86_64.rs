@@ -1,5 +1,6 @@
 use std::io;
 use crate::parser;
+use crate::elf;
 use crate::elf::header;
 
 #[derive(Debug)]
@@ -32,8 +33,8 @@ impl super::ExecGenerator for ExecGenerator {
             file_version: header::FileVersion::Current,
             flag: header::Flag::None,
         };
-        let hdr = header::Header64::new(header_param);
-        let header_bytes: Vec<u8> = hdr.try_into()?;
+        let elf = elf::Elf64::new(header_param);
+        let header_bytes: Vec<u8> = elf.try_into()?;
         f.write_all(&header_bytes)?;
 
         Ok(())

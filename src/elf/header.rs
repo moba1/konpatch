@@ -115,7 +115,7 @@ pub struct Header64Parameter {
 }
 
 #[derive(Debug)]
-pub struct Header64 {
+pub(super) struct Header64 {
     param: Header64Parameter,
     entry_address: u64,
     section_header_offset_address: u64,
