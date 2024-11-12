@@ -1,21 +1,20 @@
-use std::env;
 use std::process;
 use std::fs;
+use clap::Parser;
 
 mod parser;
 mod interpreter;
 
+#[derive(Parser, Debug)]
+#[command(version, about, long_about = None)]
+struct Args {
+    #[arg(help = "source code file path")]
+    source_code_path: String,
+}
+
 fn main() {
-    let args: Vec<String> = env::args().collect();
-    if args.len() < 2 {
-        eprintln!("Error: required source file path");
-        process::exit(1)
-    }
-    let source_file_path = &args[1];
-    let output_file_path = args
-        .get(2)
-        .map_or("a.out", |v| v.as_str());
-    let source_file = match fs::File::open(source_file_path) {
+    let args = Args::parse();
+    let source_file = match fs::File::open(args.source_code_path) {
         Err(why) => { eprintln!("cannot open source file: {}", why); process::exit(2) },
         Ok(file) => file,
     };
