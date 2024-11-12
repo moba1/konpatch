@@ -29,6 +29,9 @@ fn main() {
 
     let mut vm = interpreter::Interpreter::new();
     if let Err(err) = vm.run(code) {
+        if err.is::<interpreter::Interrupted>() {
+            process::exit(4);
+        }
         eprintln!("error occured: {:?}", err);
         process::exit(3);
     }

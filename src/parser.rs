@@ -12,6 +12,7 @@ pub enum Symbol {
     PutCharacter,
     ForwardJump,
     BackwardJump,
+    GetCharacter,
 }
 
 #[derive(Debug)]
@@ -40,6 +41,8 @@ pub fn parse<R: io::Read>(reader: R) -> io::Result<Vec<Symbol>> {
             0x3C => Symbol::PointerDecrement,
             // `.` in US ASCII
             0x2E => Symbol::PutCharacter,
+            // `,` in US ASCII
+            0x2C => Symbol::GetCharacter,
             // `[` in US ASCII
             0x5B => Symbol::ForwardJump,
             // `]` in US ASCII

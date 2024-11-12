@@ -1,5 +1,7 @@
 use std::error;
 use std::fmt;
+use std::io;
+use std::io::Read;
 use crate::parser;
 
 #[derive(Debug)]
@@ -21,6 +23,17 @@ enum State {
 }
 
 #[derive(Debug)]
+pub struct Interrupted;
+
+impl fmt::Display for Interrupted {
+    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
+        write!(f, "interrupted input")
+    }
+}
+
+impl error::Error for Interrupted {}
+
+#[derive(Debug)]
 pub struct Interpreter {
     mem: Vec<u8>,
     index: usize,
@@ -38,6 +51,7 @@ impl Interpreter {
                 parser::Symbol::PointerIncrement => self.increment_pointer(),
                 parser::Symbol::PointerDecrement => self.decrement_pointer()?,
                 parser::Symbol::PutCharacter => self.put_character(),
+                parser::Symbol::GetCharacter => self.get_character()?,
                 parser::Symbol::ForwardJump => self.forward_jump(),
                 parser::Symbol::BackwardJump => self.backward_jump(),
             }
@@ -97,6 +111,22 @@ impl Interpreter {
         if self.state != State::None { return; }
         let character = char::try_from(self.mem[self.index]).unwrap();
         print!("{}", character);
+    }
+
+    fn get_character(&mut self) -> Result<(), Box<dyn error::Error>> {
+        if self.state != State::None { return Ok(()); }
+        eprint!("input code => ");
+        let input_byte  = io::stdin()
+            .bytes()
+            .next();
+        let input_byte = match input_byte {
+            None => return Err(Interrupted)?,
+            Some(byte) => byte?,
+        };
+
+        self.mem[self.index] = input_byte;
+
+        Ok(())
     }
 
     fn forward_jump(&mut self) {
