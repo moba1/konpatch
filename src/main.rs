@@ -6,8 +6,10 @@ use clap::{Parser, Subcommand, ValueEnum};
 
 mod parser;
 mod interpreter;
+mod elf;
 mod exec_gen;
 
+use exec_gen::x86_64;
 use exec_gen::ExecGenerator;
 
 #[derive(Debug, Clone, ValueEnum)]
@@ -92,10 +94,10 @@ fn run_interpreter<P: AsRef<std::path::Path>>(source_code_path: P) {
 
 fn compile<P: AsRef<std::path::Path>>(target: Target, source_code_path: P, output_file_path: P) -> Result<(), Box<dyn error::Error>> {
     let generator = match target {
-        Target::LinuxX86_64 => exec_gen::x86_64::ExecGenerator::new(),
+        Target::LinuxX86_64 => exec_gen::x86_64::ExecGenerator::new(x86_64::Os::Linux),
         Target::Native => {
             if cfg!(target_os = "linux") && cfg!(target_arch = "x86_64") {
-                exec_gen::x86_64::ExecGenerator::new()
+                exec_gen::x86_64::ExecGenerator::new(x86_64::Os::Linux)
             } else {
                 return Err(Box::new(UnsupportedTarget))
             }
