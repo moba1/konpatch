@@ -1,20 +1,37 @@
+use std::io;
 use std::process;
 use std::fs;
-use clap::Parser;
+use clap::{Parser, Subcommand};
 
 mod parser;
 mod interpreter;
+mod exec_gen;
 
-#[derive(Parser, Debug)]
+#[derive(Debug, Parser)]
 #[command(version, about, long_about = None)]
-struct Args {
-    #[arg(help = "source code file path")]
-    source_code_path: String,
+struct Cli {
+    #[clap(subcommand)]
+    command: Command,
+}
+
+#[derive(Debug, Subcommand)]
+enum Command {
+    #[clap(arg_required_else_help = true)]
+    Interpreter {
+        #[arg(help = "source code file path")]
+        source_code_path: String,
+    }
 }
 
 fn main() {
-    let args = Args::parse();
-    let source_file = match fs::File::open(args.source_code_path) {
+    let args = Cli::parse();
+    match args.command {
+        Command::Interpreter { source_code_path } => run_interpreter(source_code_path),
+    }
+}
+
+fn run_interpreter<P: AsRef<std::path::Path>>(source_code_path: P) {
+    let source_file = match fs::File::open(source_code_path) {
         Err(why) => { eprintln!("cannot open source file: {}", why); process::exit(2) },
         Ok(file) => file,
     };
