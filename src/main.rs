@@ -32,5 +32,4 @@ fn main() {
         eprintln!("error occured: {:?}", err);
         process::exit(3);
     }
-    println!("{:?}", vm);
 }

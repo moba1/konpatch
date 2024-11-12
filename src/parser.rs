@@ -1,16 +1,17 @@
 
 use std::io;
-use std::ptr;
 use std::error;
 use std::fmt;
 
-#[derive(Debug)]
+#[derive(Debug, PartialEq, Eq, Clone)]
 pub enum Symbol {
     ValueIncrement,
     ValueDecrement,
     PointerIncrement,
     PointerDecrement,
     PutCharacter,
+    ForwardJump,
+    BackwardJump,
 }
 
 #[derive(Debug)]
@@ -39,11 +40,12 @@ pub fn parse<R: io::Read>(reader: R) -> io::Result<Vec<Symbol>> {
             0x3C => Symbol::PointerDecrement,
             // `.` in US ASCII
             0x2E => Symbol::PutCharacter,
+            // `[` in US ASCII
+            0x5B => Symbol::ForwardJump,
+            // `]` in US ASCII
+            0x5D => Symbol::BackwardJump,
             // `\n` in US ASCII
-            0x0A | 0x20 => continue,
-            unknown_symbol => return Err(io::Error::new(
-                io::ErrorKind::Other, UnknownSymbolError(unknown_symbol)
-            )),
+            _ => continue,
         };
         code.push(symbol)
     }
