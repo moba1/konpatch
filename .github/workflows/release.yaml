@@ -1,6 +1,5 @@
 name: Release
 
-# Releasesへのファイル追加のために書き込み権限が必要
 permissions:
   contents: write
 
@@ -29,13 +28,11 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v2
 
-      # Rustのpackage名を取得して環境変数に入れておく。(後のステップで使用)
       - name: Extract crate information
         shell: bash
         run: |
           echo "PROJECT_NAME=$(sed -n 's/^name = "\(.*\)"/\1/p' Cargo.toml | head -n1)" >> $GITHUB_ENV
 
-      # rustcやcargoをインストール
       - name: Install Rust toolchain
         uses: actions-rs/toolchain@v1
         with:
@@ -44,7 +41,6 @@ jobs:
           override: true
           profile: minimal
 
-      # targetに応じてcargoもしくはcrossを使用してビルド
       - name: Build
         uses: actions-rs/cargo@v1
         with:
@@ -52,13 +48,11 @@ jobs:
           command: build
           args: --release --target ${{ matrix.job.target }}
 
-      # ビルド済みバイナリをリネーム
       - name: Rename artifacts
         shell: bash
         run: |
           mv target/${{ matrix.job.target }}/release/${{ env.PROJECT_NAME }}{,-${{ github.ref_name }}-${{ matrix.job.target }}${{ matrix.job.extension }}}
 
-      # ビルド済みバイナリをReleasesに配置
       - name: Release
         uses: softprops/action-gh-release@v1
         env:
