@@ -157,3 +157,22 @@ impl Interpreter {
         }
     }
 }
+
+#[cfg(test)]
+mod tests {
+    use std::io;
+    use crate::parser;
+
+    #[test]
+    fn it_runs() {
+        let code = parser::parse(io::Cursor::new(
+            "+++[-]>++<++"
+        ));
+        assert!(code.is_ok());
+
+        let mut vm = super::Interpreter::new();
+        let result = vm.run(code.unwrap());
+        assert!(result.is_ok());
+        assert_eq!(vm.mem, vec![2, 2]);
+    }
+}

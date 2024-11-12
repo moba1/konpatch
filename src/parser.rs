@@ -55,3 +55,32 @@ pub fn parse<R: io::Read>(reader: R) -> io::Result<Vec<Symbol>> {
 
     Ok(code)
 }
+
+#[cfg(test)]
+mod tests {
+    use std::io;
+
+    #[test]
+    fn it_parses() {
+        let code = "+-><[],.";
+        let parsed_code = vec![
+            super::Symbol::ValueIncrement,
+            super::Symbol::ValueDecrement,
+            super::Symbol::PointerIncrement,
+            super::Symbol::PointerDecrement,
+            super::Symbol::ForwardJump,
+            super::Symbol::BackwardJump,
+            super::Symbol::GetCharacter,
+            super::Symbol::PutCharacter,
+        ];
+        let value = super::parse(io::Cursor::new(code));
+        assert!(value.is_ok());
+        assert_eq!(value.unwrap(), parsed_code);
+
+        let code = "";
+        let parsed_code = vec![];
+        let value = super::parse(io::Cursor::new(code));
+        assert!(value.is_ok());
+        assert_eq!(value.unwrap(), parsed_code);
+    }
+}
