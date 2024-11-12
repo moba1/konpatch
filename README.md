@@ -19,7 +19,7 @@ write brainfuck code & save `test.bf`
 run code
 
 ```shell
-target/debug/konpatch test.bf
+target/debug/konpatch interpreter test.bf
 ```
 
 ```
