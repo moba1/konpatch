@@ -165,7 +165,6 @@ impl Header64 {
     fn to_ordered_bytes<E: byteorder::ByteOrder>(&self) -> io::Result<Vec<u8>> {
         let mut buf = vec![];
 
-        // ELF Header
         buf.write_u16::<E>(self.param.object_file_type.clone().into())?;
         buf.write_u16::<E>(self.param.machine.clone().into())?;
         buf.write_u32::<E>(self.param.file_version.clone().into())?;
